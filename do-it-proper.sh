@@ -10,9 +10,10 @@ fi
 declare -A repos=(
     [1]="CISOfy|https://packages.cisofy.com/keys/cisofy-software-public.key|deb [arch=amd64] https://packages.cisofy.com/community/lynis/deb/ stable main|lynis"
     [2]="Chrome|https://dl.google.com/linux/linux_signing_key.pub|deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main|google-chrome-stable"
-    [3]="VSCode|https://packages.microsoft.com/keys/microsoft.asc|deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/code stable main|code"
-    [4]="NordVPN|https://repo.nordvpn.com/gpg/nordvpn_public.asc|deb https://repo.nordvpn.com/deb/nordvpn/debian stable main|nordvpn"
-    [5]="CrowdSec|https://packagecloud.io/crowdsec/crowdsec/gpgkey|deb https://packagecloud.io/crowdsec/crowdsec/debian/ bullseye main|crowdsec"
+    [3]="VSCodium|https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg|https://download.vscodium.com/debs vscodium main|codium"
+    [4]="VSCode|https://packages.microsoft.com/keys/microsoft.asc|deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/code stable main|code"
+    [5]="NordVPN|https://repo.nordvpn.com/gpg/nordvpn_public.asc|deb https://repo.nordvpn.com/deb/nordvpn/debian stable main|nordvpn"
+    [6]="CrowdSec|https://packagecloud.io/crowdsec/crowdsec/gpgkey|deb https://packagecloud.io/crowdsec/crowdsec/debian/ bookworm main|crowdsec"
 )
 
 # Function to remove duplicate entries from sources.list.d
