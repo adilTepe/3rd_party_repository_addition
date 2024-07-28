@@ -6,15 +6,8 @@ if [ "$EUID" -ne 0 ]; then
   exit 1
 fi
 
-# Define repositories
-declare -A repos=(
-    [1]="CISOfy|https://packages.cisofy.com/keys/cisofy-software-public.key|deb [arch=amd64] https://packages.cisofy.com/community/lynis/deb/ stable main|lynis"
-    [2]="Chrome|https://dl.google.com/linux/linux_signing_key.pub|deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main|google-chrome-stable"
-    [3]="VSCodium|https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg|https://download.vscodium.com/debs vscodium main|codium"
-    [4]="VSCode|https://packages.microsoft.com/keys/microsoft.asc|deb [arch=amd64,arm64,armhf] https://packages.microsoft.com/repos/code stable main|code"
-    [5]="NordVPN|https://repo.nordvpn.com/gpg/nordvpn_public.asc|deb https://repo.nordvpn.com/deb/nordvpn/debian stable main|nordvpn"
-    [6]="CrowdSec|https://packagecloud.io/crowdsec/crowdsec/gpgkey|deb https://packagecloud.io/crowdsec/crowdsec/debian/ bookworm main|crowdsec"
-)
+# CSV file containing repository information
+REPO_CSV="repositories.csv"
 
 # Function to remove duplicate entries from sources.list.d
 remove_duplicate_sources() {
@@ -97,11 +90,14 @@ process_input() {
     echo "${result[@]}"
 }
 
+# Read repositories from CSV file
+readarray -t repos < <(tail -n +2 "$REPO_CSV")
+
 # Display repository list
 echo "Available repositories:"
-for i in $(seq 1 ${#repos[@]}); do
-    IFS='|' read -r name _ _ _ <<< "${repos[$i]}"
-    echo "$i) $name"
+for i in "${!repos[@]}"; do
+    IFS=',' read -r name _ _ _ <<< "${repos[$i]}"
+    echo "$((i+1))) $name"
 done
 
 # Get user input for repositories
@@ -113,7 +109,7 @@ selected_repos=($(process_input "$repo_choice" "${#repos[@]}"))
 
 # Add selected repositories
 for repo in "${selected_repos[@]}"; do
-    IFS='|' read -r name keyring_url sources_list package <<< "${repos[$repo]}"
+    IFS=',' read -r name keyring_url sources_list packages <<< "${repos[$((repo-1))]}"
     add_repository "$name" "$keyring_url" "$sources_list"
 done
 
@@ -126,8 +122,8 @@ apt update
 # Display package list for selected repositories only
 echo "Main packages for selected repositories:"
 for i in "${selected_repos[@]}"; do
-    IFS='|' read -r name _ _ package <<< "${repos[$i]}"
-    echo "$i) $package"
+    IFS=',' read -r name _ _ packages <<< "${repos[$((i-1))]}"
+    echo "$i) $packages"
 done
 
 # Get user input for package installation
@@ -140,8 +136,11 @@ packages_to_install=($(process_input "$install_choice" "${#selected_repos[@]}"))
 # Install selected packages
 if [ ${#packages_to_install[@]} -gt 0 ]; then
     for pkg in "${packages_to_install[@]}"; do
-        IFS='|' read -r _ _ _ package <<< "${repos[${selected_repos[$((pkg-1))]}]}"
-        apt install -y "$package"
+        IFS=',' read -r _ _ _ packages <<< "${repos[$((selected_repos[$((pkg-1))]-1))]}"
+        IFS=' ' read -ra package_array <<< "$packages"
+        for package in "${package_array[@]}"; do
+            apt install -y "$package"
+        done
     done
 fi
 
