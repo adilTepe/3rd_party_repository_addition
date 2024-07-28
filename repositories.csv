@@ -1,0 +1,6 @@
+Name,KeyringURL,SourcesList,Packages
+CISOfy,https://packages.cisofy.com/keys/cisofy-software-public.key,https://packages.cisofy.com/community/lynis/deb/ stable main,lynis
+Chrome,https://dl.google.com/linux/linux_signing_key.pub,http://dl.google.com/linux/chrome/deb/ stable main,google-chrome-stable
+VSCode,https://packages.microsoft.com/keys/microsoft.asc,https://packages.microsoft.com/repos/code stable main,code
+NordVPN,https://repo.nordvpn.com/gpg/nordvpn_public.asc,https://repo.nordvpn.com/deb/nordvpn/debian stable main,nordvpn
+CrowdSec,https://packagecloud.io/crowdsec/crowdsec/gpgkey,https://packagecloud.io/crowdsec/crowdsec/debian/ bookworm main,crowdsec
